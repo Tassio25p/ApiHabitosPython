@@ -24,12 +24,13 @@ from routes.categorias import categorias_bp # Importa o Blueprint de categorias
 from routes.habitos import habitos_bp # Importa o Blueprint de hábitos
 from routes.metas import metas_bp # Importa o Blueprint de metas
 from routes.registros import registros_bp # Importa o Blueprint de registros
+from routes.auth_routes import auth_bp # Importa o Blueprint de autenticação
 
 
 #-------------------------------------------------------
 # Cria a aplicação Flask
 app = Flask(__name__)
-app.config["SQLACHEMY_TRACK_NOTIFICATIONS"] = False 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
 app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:Root#12345@localhost/ApiHabitos'
 
 # inicializa o banco de dados e as migrações
@@ -42,7 +43,8 @@ app.register_blueprint(usuario_bp)
 app.register_blueprint(categorias_bp)
 app.register_blueprint(habitos_bp)
 app.register_blueprint(metas_bp)    
-
+app.register_blueprint(registros_bp)
+app.register_blueprint(auth_bp)
 #-----------------------------------------
 
 #Configura a chave secreta para JWT

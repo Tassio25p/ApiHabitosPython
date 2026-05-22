@@ -8,7 +8,7 @@ registros_bp = Blueprint('registros', __name__, url_prefix='/registros')
 
 
 #Rota CREATE (POST)
-@registros_bp.route('/', methods=["POST"])
+@registros_bp.route('', methods=["POST"])
 def criar_registro():
     data = request.get_json()
 
@@ -18,7 +18,6 @@ def criar_registro():
         concluido=data.get("concluido")
 
     )
-
     db.session.add(novo)
     db.session.commit()
 
@@ -29,13 +28,25 @@ def criar_registro():
 
 
 #Rota READ (GET)
-@registros_bp.route('/', methods=["GET"])
+@registros_bp.route('', methods=["GET"])
 def listar_registros():
-    registros = Registros_habitos.query.all()
+    page = request.args.get("page", 1, type=int) # Obtém o número da página a partir dos parâmetros da URL, com valor padrão 1
+    per_page = request.args.get("per_page", 5, type=int) # obtem o número de itens por página a partir dos parâmetros da URL, com valor padrão 5
+
+    paginacao = Registros_habitos.query.paginate( # Realiza a paginação dos resultados da consulta de registros
+        page=page,
+        per_page=per_page,
+        error_out=False # Impede que a função lance um erro 404 se a página solicitada estiver fora do intervalo, retornando uma página vazia em vez disso
+    )
+    registros = paginacao.itcategoriasems # Obtém os registros da página atual a partir do objeto
 
     return jsonify({
-        "registros": [r.as_dict() for r in registros],
-        "total": len(registros)
+    "Registros": [r.as_dict() for r in registros], # Converte cada registro para um dicionário usando o método as_dict() e retorna como uma lista
+    "pagina_atual": paginacao.page, # Retorna o número da página atual
+    "por_pagina": paginacao.per_page, # Retorna o número de itens por página
+    "total_registros": paginacao.total, # Retorna o total de registros disponíveis
+    "total_paginas": paginacao.pages # Retorna o total de páginas disponíveis
+
     })
 
 
@@ -55,7 +66,12 @@ def atualizar_registro(id):
     data = request.get_json()
 
     for key, value in data.items():
-        setattr(registro, key, value)
+        if "habito_id" in data:
+            registro.habito_id = data["habito_id"] # Atualiza o ID do hábito associado ao registro se fornecido
+        if "data" in data:
+            registro.data = data["data"] # Atualiza a data do registro se fornecida
+        if "concluido" in data:
+            registro.concluido = data["concluido"] # Atualiza o status de conclusão do registro se fornecido
 
     db.session.commit()
 
