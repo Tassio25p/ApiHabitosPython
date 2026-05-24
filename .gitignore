@@ -1,3 +1,76 @@
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+# ==========================
+# Ambiente virtual Python
+# ==========================
+venv/
+.env/
+
+# ==========================
+# Variáveis de ambiente
+# ==========================
+.env
+
+# ==========================
+# Cache do Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ==========================
+# Arquivos temporários
+# ==========================
+*.log
+*.tmp
+*.bak
+
+# ==========================
+# VSCode
+# ==========================
+.vscode/
+
+# ==========================
+# PyCharm / IntelliJ
+# ==========================
+.idea/
+
+# ==========================
+# Flask migrations
+# ==========================
+migrations/__pycache__/
+
+# ==========================
+# Banco SQLite (caso use)
+# ==========================
+*.db
+*.sqlite3
+
+# ==========================
+# Sistema Operacional
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Arquivos compilados Python
+# ==========================
+*.so
+
+# ==========================
+# Testes e cobertura
+# ==========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================
+# Build
+# ==========================
+build/
+dist/
+*.egg-info/
+
+# ==========================
+# Arquivos do Flask
+# ==========================
+instance/
+.webassets-cache

@@ -14,6 +14,6 @@ class Metas(db.Model):
         return {
             "id": self.id,
             "descricao": self.descricao,
-            "objetivo": self.objetivo,
+            "objetivo": self.objetivo.isoformat() if self.objetivo else None,
             "usuario_id": self.usuario_id
         }
