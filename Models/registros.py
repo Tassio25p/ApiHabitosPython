@@ -11,7 +11,8 @@ class Registros_habitos(db.Model):
      def as_dict(self):
         return {
             "id": self.id,
-            "habitos_id": self.habito_id,
-            "data": self.data,
+            "habito_id": self.habito_id,
+            "data": self.data.isoformat() if self.data else None,
             "concluido": self.concluido
         }
+     

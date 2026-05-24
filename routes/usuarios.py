@@ -10,24 +10,32 @@ usuario_bp = Blueprint("usuarios", __name__, url_prefix="/usuarios")
 @usuario_bp.route("", methods=["GET"])
 @jwt_required()
 def listar_usuarios():
-    page = request.args.get("page", 1, type=int) # Obtém o número da página a partir dos parâmetros da URL, com valor padrão 1
-    per_page = request.args.get("per_page", 5, type=int) # Obtém o número de itens por página a partir dos parâmetros da URL, com valor padrão 5
-    
-    paginacao = Usuarios.query.paginate( # Realiza a paginação dos resultados da consulta de usuários
-    page=page,
-    per_page=per_page,
-    error_out=False
-)
-    usuarios = paginacao.items # Obtém os usuários da página atual a partir do objeto de paginação
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 5, type=int)
+
+    nome = request.args.get("nome")
+    email = request.args.get("email")
+    query = Usuarios.query
+
+    if nome:
+        query = query.filter(Usuarios.nome.ilike(f"%{nome}%"))
+
+    if email:
+        query = query.filter(Usuarios.email.ilike(f"%{email}%"))
+
+    paginacao = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
 
     return jsonify({
-    "usuarios": [u.as_dict() for u in usuarios], # Converte cada usuário para um dicionário usando o método as_dict() e retorna como uma lista
-    "pagina_atual": paginacao.page, # Retorna o número da página atual
-    "por_pagina": paginacao.per_page, # Retorna o número de itens por página
-    "total_registros": paginacao.total, # Retorna o total de registros disponíveis
-    "total_paginas": paginacao.pages # Retorna o total de páginas disponíveis
-})
-
+        "usuarios": [u.as_dict() for u in paginacao.items],
+        "pagina_atual": paginacao.page,
+        "por_pagina": paginacao.per_page,
+        "total_registros": paginacao.total,
+        "total_paginas": paginacao.pages
+    }), 200
 #Rota read (Por id)
 
 @usuario_bp.route("/<int:id>", methods=["GET"])
@@ -69,5 +77,6 @@ def deletar_usuario(id):
 
     db.session.delete(usuario) 
     db.session.commit()
-
-    return jsonify({"message": "Usuário deletado com sucesso"})
+    return jsonify({
+        "message": "Usuário deletado com sucesso"
+    })

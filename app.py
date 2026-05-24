@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from db import db
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
+
 
 load_dotenv()
 #-------------------------------------------------------
@@ -31,10 +33,15 @@ from routes.auth_routes import auth_bp # Importa o Blueprint de autenticação
 # Cria a aplicação Flask
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:Root#12345@localhost/ApiHabitos'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:root@localhost/ApiHabitos'
+#-------------------------------------------------------------------------------------------
+
+# Chave usada para gerar e validar tokens JWT
+app.config["JWT_SECRET_KEY"] = "minha_chave_secreta_super_segura"
 
 # inicializa o banco de dados e as migrações
-db.init_app(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True) # Configura CORS para permitir solicitações de qualquer origem e suportar credenciais
+db.init_app(app) 
 migrate = Migrate(app,db) 
 #----------------------------------------
 # registro de todos os blueprints 
@@ -45,6 +52,7 @@ app.register_blueprint(habitos_bp)
 app.register_blueprint(metas_bp)    
 app.register_blueprint(registros_bp)
 app.register_blueprint(auth_bp)
+
 #-----------------------------------------
 
 #Configura a chave secreta para JWT
