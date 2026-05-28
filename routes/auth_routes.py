@@ -13,6 +13,37 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 @auth_bp.route("/register", methods=["POST"])
 
 def register():
+    """
+    Cadastra um novo usuário
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - nome
+            - email
+            - senha
+          properties:
+            nome:
+              type: string
+              example: Tassio
+            email:
+              type: string
+              example: tassio@email.com
+            senha:
+              type: string
+              example: "123456"
+    responses:
+      201:
+        description: Usuário cadastrado com sucesso
+      400:
+        description: Dados obrigatórios não enviados, senha inválida ou email já cadastrado
+    """
     data = request.get_json()
     nome = data.get("nome")
     email = data.get("email")
@@ -49,6 +80,35 @@ def register():
 # LOGIN - autenticar usuário
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    """
+    Realiza login do usuário
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - email
+            - senha
+          properties:
+            email:
+              type: string
+              example: tassio@email.com
+            senha:
+              type: string
+              example: "123456"
+    responses:
+      200:
+        description: Login realizado com sucesso e token JWT retornado
+      400:
+        description: Email e senha são obrigatórios
+      401:
+        description: Email ou senha inválidos
+    """
     data = request.get_json()
     email = data.get("email")
     senha = data.get("senha")
@@ -78,6 +138,21 @@ def login():
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
+    """
+    Retorna os dados do usuário autenticado
+    ---
+    tags:
+      - Autenticação
+    security:
+      - Bearer: []
+    responses:
+      200:
+        description: Dados do usuário logado retornados com sucesso
+      401:
+        description: Token JWT ausente ou inválido
+      404:
+        description: Usuário não encontrado
+    """
     usuario_id = get_jwt_identity()
 
     usuario = Usuarios.query.get(usuario_id)

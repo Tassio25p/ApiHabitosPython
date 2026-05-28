@@ -1,0 +1,44 @@
+http://127.0.0.1:5000/apidocs/#/
+
+
+# API de Hábitos
+
+API REST desenvolvida em Python com Flask para gerenciamento de hábitos pessoais. O projeto permite cadastro e login de usuários, criação de categorias, hábitos, metas e registros de progresso.
+
+O sistema possui autenticação com JWT, senhas criptografadas, paginação nos CRUDs, validações e integração com front-end em HTML, CSS e JavaScript.
+
+## Tecnologias utilizadas
+
+- Python
+- Flask
+- Flask-SQLAlchemy
+- Flask-Migrate
+- MySQL
+- PyMySQL
+- Flask-JWT-Extended
+- Werkzeug
+- Flask-CORS
+- Flasgger / Swagger
+- HTML, CSS e JavaScript
+
+## Funcionalidades
+
+- Cadastro de usuário
+- Login com JWT
+- Senha criptografada
+- CRUD de usuários
+- CRUD de categorias
+- CRUD de hábitos
+- CRUD de metas
+- CRUD de registros
+- Paginação nas listagens
+- Controle de dados por usuário autenticado
+- Documentação interativa com Swagger
+
+## Como instalar
+
+Crie e ative o ambiente virtual:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
